@@ -17,8 +17,8 @@ export async function lint(documents: Array<number | string>, flags: ILintConfig
   spectral.setRuleset(ruleset);
 
   for (const [format, lookup, prettyName] of KNOWN_FORMATS) {
-    spectral.registerFormat(format, document => {
-      if (lookup(document)) {
+    spectral.registerFormat(format, (document, uri) => {
+      if (lookup(document, uri)) {
         if (flags.quiet !== true) {
           console.log(`${prettyName} detected`);
         }
@@ -32,15 +32,11 @@ export async function lint(documents: Array<number | string>, flags: ILintConfig
 
   if (flags.verbose === true) {
     if (ruleset) {
-      const rules = Object.values(spectral.rules);
+      const rules = Object.values(spectral.ruleset.rules);
       console.info(`Found ${rules.length} rules (${rules.filter(rule => rule.enabled).length} enabled)`);
     } else {
       console.info('No rules loaded, attempting to detect document type');
     }
-  }
-
-  if (flags.skipRule !== void 0) {
-    spectral.setRules(skipRules(ruleset.rules, flags));
   }
 
   const [globs, fileDescriptors] = segregateEntriesPerKind(documents);

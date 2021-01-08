@@ -11,7 +11,7 @@ export async function createWithRules(
   try {
     Object.assign(STATIC_ASSETS, await import('../../../../../rulesets/assets/assets.oas.json'), {
       'my-ruleset': JSON.stringify({
-        extends: [['spectral:oas', 'off']],
+        extends: [['@stoplight/spectral/rulesets/oas/index.json', 'off']],
         rules: rules.reduce((obj, name) => {
           obj[name] = true;
           return obj;
@@ -27,7 +27,7 @@ export async function createWithRules(
 
     for (const rule of rules) {
       // let's make sure the rule is actually enabled
-      expect(s.rules[rule].severity).not.toEqual(-1);
+      expect(s.ruleset!.rules[rule].severity).not.toEqual(-1);
     }
 
     return s;

@@ -2,12 +2,11 @@ import { JsonPath, Optional } from '@stoplight/types';
 import { get } from 'lodash';
 
 import { Document } from '../document';
-import { Rule } from '../rule';
-import { getDiagnosticSeverity } from '../ruleset/severity';
 import { IFunctionResult, IFunctionValues, IGivenNode } from '../types';
 import { decodeSegmentFragment, getClosestJsonPath, printPath, PrintStyle } from '../utils';
 import { IRunnerInternalContext } from './types';
-import { getLintTargets, ExceptionLocation, isAKnownException, IMessageVars, message } from './utils';
+import { getLintTargets, ExceptionLocation, isAKnownException, message, IMessageVars } from './utils';
+import { Rule } from '../ruleset/rule/rule';
 
 export const lintNode = (
   context: IRunnerInternalContext,
@@ -25,12 +24,7 @@ export const lintNode = (
   const givenPath = node.path.length > 0 && node.path[0] === '$' ? node.path.slice(1) : node.path;
 
   for (const then of rule.then) {
-    const func = context.functions[then.function];
-    if (typeof func !== 'function') {
-      console.warn(`Function ${then.function} not found. Called by rule ${rule.name}.`);
-      continue;
-    }
-
+    const func = context.ruleset.getFunctionByName(then.function);
     const targets = getLintTargets(node.value, then.field);
 
     for (const target of targets) {
@@ -40,7 +34,7 @@ export const lintNode = (
       try {
         targetResults = func(
           target.value,
-          then.functionOptions ?? null,
+          then.functionOptions ?? (null as any),
           {
             given: givenPath,
             target: targetPath,
@@ -95,10 +89,7 @@ function processTargetResults(
 ): void {
   for (const result of results) {
     const escapedJsonPath = (result.path ?? targetPath).map(decodeSegmentFragment);
-    const associatedItem = context.documentInventory.findAssociatedItemForPath(
-      escapedJsonPath,
-      rule.resolved !== false,
-    );
+    const associatedItem = context.documentInventory.findAssociatedItemForPath(escapedJsonPath, rule.resolved);
     const path = associatedItem?.path ?? getClosestJsonPath(context.documentInventory.resolved, escapedJsonPath);
     const source = associatedItem?.document.source;
 
@@ -131,7 +122,7 @@ function processTargetResults(
       // todo: rule.isInterpolable
       message: (rule.message === null ? rule.description ?? resultMessage : message(rule.message, vars)).trim(),
       path,
-      severity: getDiagnosticSeverity(rule.severity),
+      severity: rule.severity,
       ...(source !== null ? { source } : null),
       range,
     });

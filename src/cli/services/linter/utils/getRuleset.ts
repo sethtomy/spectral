@@ -17,7 +17,7 @@ async function loadRulesets(cwd: string, rulesetFiles: string[]): Promise<IRules
   return readRuleset(rulesetFiles.map(file => (isAbsolute(file) ? file : resolve(cwd, file))));
 }
 
-export async function getRuleset(rulesetFile: Optional<string[]>): Promise<IRuleset> {
+export async function getRuleset(rulesetFile: Optional<string>): Promise<IRuleset> {
   const rulesetFiles = rulesetFile ?? (await getDefaultRulesetFile(process.cwd()));
 
   return await (rulesetFiles !== null

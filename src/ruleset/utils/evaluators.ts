@@ -1,8 +1,6 @@
 import { join, stripRoot } from '@stoplight/path';
 import { Dictionary, Optional } from '@stoplight/types';
 import { isObject } from 'lodash';
-import { decorateIFunctionWithSchemaValidation } from '../validation';
-import { JSONSchema, IFunction } from '../../types';
 
 export type CJSExport = Partial<{
   exports: object | ESCJSCompatibleExport;
@@ -140,28 +138,6 @@ export const evaluateExport = (body: string, source: string | null, inject: Dict
   }
 
   return maybeFn;
-};
-
-export type CompileOptions = {
-  code: string;
-  name: string;
-  source: string | null;
-  schema: JSONSchema | null;
-  inject: Dictionary<unknown>;
-};
-
-export const compileExportedFunction = ({ code, name, source, schema, inject }: CompileOptions) => {
-  const exportedFn = evaluateExport(code, source, inject) as IFunction;
-
-  const fn = schema !== null ? decorateIFunctionWithSchemaValidation(exportedFn, schema) : exportedFn;
-
-  Reflect.defineProperty(fn, 'name', {
-    configurable: true,
-    value: name,
-  });
-
-  Object.freeze(fn);
-  return fn;
 };
 
 export function setFunctionContext(context: unknown, fn: Function) {

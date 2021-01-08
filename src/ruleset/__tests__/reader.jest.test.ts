@@ -2,7 +2,7 @@ import * as path from '@stoplight/path';
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as fs from 'fs';
 import * as nock from 'nock';
-import { RuleCollection, Spectral } from '../../spectral';
+import { Spectral } from '../../spectral';
 import { readRuleset } from '../readRuleset';
 
 jest.mock('fs');

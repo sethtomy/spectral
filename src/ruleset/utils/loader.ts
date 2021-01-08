@@ -1,6 +1,9 @@
 import { join } from '@stoplight/path';
 import * as fs from 'fs';
-import { isDefaultRulesetFile } from './isDefaultRulesetFile';
+
+const DEFAULT_RULESET_FILE = /^\.?spectral\.(?:ya?ml|json)$/;
+
+export const isDefaultRulesetFile = (uri: string) => DEFAULT_RULESET_FILE.test(uri);
 
 export const getDefaultRulesetFile = (directory: string): Promise<string | null> => {
   return new Promise(resolve => {

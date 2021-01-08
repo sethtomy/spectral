@@ -81,12 +81,6 @@ const lintCommand: CommandModule = {
           type: 'string',
           coerce: toArray,
         },
-        'skip-rule': {
-          alias: 's',
-          description: 'ignore certain rules if they are causing trouble',
-          type: 'string',
-          coerce: toArray,
-        },
         'fail-severity': {
           alias: 'F',
           description: 'results of this level or above will trigger a failure exit code',
