@@ -49,8 +49,6 @@ function assertReadRuleset(
   }
 }
 
-export class OfflineRuleset {}
-
 export class Ruleset {
   protected readonly readOpts: Readonly<IReadOptions>;
 

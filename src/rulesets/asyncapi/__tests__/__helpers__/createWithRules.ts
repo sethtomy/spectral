@@ -22,7 +22,7 @@ export async function createWithRules(rules: (keyof typeof ruleset['rules'])[]):
     await s.loadRuleset('my-ruleset');
 
     for (const rule of rules) {
-      expect(s.rules[rule].severity).not.toEqual(-1);
+      expect(s.ruleset!.rules[rule].severity).not.toEqual(-1);
     }
 
     return s;
