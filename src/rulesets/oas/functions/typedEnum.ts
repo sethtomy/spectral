@@ -1,9 +1,11 @@
 import type { IFunction, IFunctionContext } from '../../../types';
+import { schema } from '../../../functions/schema';
 
 export const typedEnum: IFunction = function (this: IFunctionContext, targetVal, opts, paths, otherValues) {
   if (targetVal === null || typeof targetVal !== 'object') {
     return;
   }
+
   if (targetVal.enum === null || targetVal.enum === void 0 || targetVal.type === null || targetVal.type === void 0) {
     return;
   }
@@ -41,7 +43,7 @@ export const typedEnum: IFunction = function (this: IFunctionContext, targetVal,
   const incorrectValues: Array<{ index: number; val: unknown }> = [];
 
   enumValues.forEach((val, index) => {
-    const res = this.functions.schema(val, schemaObject, paths, otherValues);
+    const res = schema(val, schemaObject, paths, otherValues);
 
     if (Array.isArray(res) && res.length !== 0) {
       incorrectValues.push({ index, val });

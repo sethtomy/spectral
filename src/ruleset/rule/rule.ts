@@ -6,14 +6,14 @@ import { getDiagnosticSeverity, DEFAULT_SEVERITY_LEVEL } from '../utils/severity
 import { hasIntersectingElement } from '../../utils/hasIntersectingElement';
 import { IDocument } from '../../document';
 import { IRuleDefinition, IRuleThen } from './types';
-import { IGivenNode } from '../../types';
+import { FormatLookup, IGivenNode } from '../../types';
 
 export class Rule {
   public description: string | null;
   public message: string | null;
   public severity: DiagnosticSeverity;
   public resolved: boolean;
-  public formats: Optional<string[]>;
+  public formats: Optional<FormatLookup[]>;
   public enabled: boolean;
   public recommended: boolean;
   public documentationUrl: string | null;

@@ -1,6 +1,6 @@
 import type { JsonPath, Segment } from '@stoplight/types';
 import type { IFunction, IFunctionResult } from '../../../types';
-import { isObject } from './utils/isObject';
+import { isObject } from '../../../utils/isObject';
 
 const pathRegex = /(\{[a-zA-Z0-9_-]+\})+/g;
 

@@ -1,13 +1,8 @@
-import { isObject } from 'lodash';
 import { IFunction } from '../types';
-import { safePointerToPath } from '../utils';
+import { safePointerToPath } from '../utils/refs';
+import { isObject } from '../utils/isObject';
 
-export const unreferencedReusableObject: IFunction<{ reusableObjectsLocation: string }> = (
-  data,
-  opts,
-  _paths,
-  otherValues,
-) => {
+export const unreferencedReusableObject: IFunction<{ reusableObjectsLocation: string }> = (data, opts, _paths, otherValues) => {
   if (!isObject(data)) return;
 
   const graph = otherValues.documentInventory.graph;

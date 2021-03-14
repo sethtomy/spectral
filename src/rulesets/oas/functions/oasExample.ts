@@ -1,6 +1,6 @@
 import type { IFunction, IFunctionContext, IFunctionResult, JSONSchema } from '../../../types';
-import type { ISchemaOptions } from '../../../functions/schema';
-import { isObject } from './utils/isObject';
+import { ISchemaOptions, schema } from '../../../functions/schema';
+import { isObject } from '../../../utils/isObject';
 import type { Dictionary, JsonPath, Optional } from '@stoplight/types';
 
 interface IOasExampleOptions {
@@ -109,13 +109,7 @@ function* getSchemaValidationItems(
   }
 }
 
-export const oasExample: IFunction<IOasExampleOptions> = function (
-  this: IFunctionContext,
-  targetVal,
-  opts,
-  paths,
-  otherValues,
-) {
+export const oasExample: IFunction = function (this: IFunctionContext, targetVal, opts, paths, otherValues) {
   if (!isObject(targetVal)) {
     return;
   }
@@ -133,7 +127,7 @@ export const oasExample: IFunction<IOasExampleOptions> = function (
       : getMediaValidationItems(MEDIA_VALIDATION_ITEMS[opts.oasVersion], targetVal, paths.given, opts.oasVersion);
 
   for (const validationItem of validationItems) {
-    const result = this.functions.schema.call(
+    const result = schema.call(
       this,
       validationItem.value,
       schemaOpts,

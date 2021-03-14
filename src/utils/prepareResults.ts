@@ -1,6 +1,6 @@
 const md5 = require('blueimp-md5');
 
-import { uniqBy } from 'lodash';
+import { uniqBy } from 'lodash-es';
 
 import { IRuleResult } from '../types';
 import { compareResults } from './sortResults';

@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig.build.json",
-  "include": ["dist"],
+  "include": [
+    "src/ruleset/types.ts", "src/rulesets/**/*.ts", "src/functions/*.ts", "src/formats/*.ts"
+  ],
   "compilerOptions": {
     "outDir": "dist",
     "module": "ESNext"

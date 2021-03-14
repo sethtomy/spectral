@@ -1,4 +1,3 @@
-import { stringify } from '@stoplight/json';
 import { Parsers } from '../../';
 import { Document } from '../../document';
 import { DocumentInventory } from '../../documentInventory';
@@ -13,7 +12,7 @@ function runAlphabetical(target: any, keyedBy?: string) {
     {
       given: null,
       original: null,
-      documentInventory: new DocumentInventory(new Document(stringify(target), Parsers.Json), {} as any),
+      documentInventory: new DocumentInventory(new Document(JSON.stringify(target), Parsers.Json), {} as any),
       rule: {} as any,
     },
   );

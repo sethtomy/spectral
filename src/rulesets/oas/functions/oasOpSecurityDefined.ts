@@ -2,7 +2,7 @@ import type { JsonPath } from '@stoplight/types';
 
 import type { IFunction, IFunctionResult } from '../../../types';
 import { getAllOperations } from './utils/getAllOperations';
-import { isObject } from './utils/isObject';
+import { isObject } from '../../../utils/isObject';
 
 function _get(value: unknown, path: JsonPath): unknown {
   for (const segment of path) {

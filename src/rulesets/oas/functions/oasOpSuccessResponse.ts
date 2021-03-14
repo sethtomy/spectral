@@ -1,5 +1,5 @@
 import type { IFunction } from '../../../types';
-import { isObject } from './utils/isObject';
+import { isObject } from '../../../utils/isObject';
 
 export const oasOpSuccessResponse: IFunction = targetVal => {
   if (!isObject(targetVal)) {

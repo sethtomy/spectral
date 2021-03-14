@@ -24,27 +24,22 @@ export const lintNode = (
   const givenPath = node.path.length > 0 && node.path[0] === '$' ? node.path.slice(1) : node.path;
 
   for (const then of rule.then) {
-    const func = context.ruleset.getFunctionByName(then.function);
     const targets = getLintTargets(node.value, then.field);
 
     for (const target of targets) {
       const targetPath = target.path.length > 0 ? [...givenPath, ...target.path] : givenPath;
 
       let targetResults;
-      try {
-        targetResults = func(
-          target.value,
-          then.functionOptions ?? (null as any),
-          {
-            given: givenPath,
-            target: targetPath,
-          },
-          fnContext,
-        );
-      } catch (ex) {
-        // todo: use reporter or sth
-        console.warn(ex);
-      }
+      targetResults = then.function(
+        target.value,
+        then.functionOptions,
+        {
+          given: givenPath,
+          target: targetPath,
+        },
+        fnContext,
+      );
+
 
       if (targetResults === void 0) continue;
 
@@ -62,10 +57,6 @@ export const lintNode = (
                     targetPath, // todo: get rid of it somehow.
                   ),
             )
-            .catch(ex => {
-              // todo: use reporter or sth
-              console.warn(ex.message);
-            }),
         );
       } else {
         processTargetResults(

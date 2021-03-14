@@ -2,17 +2,15 @@ import { Dictionary } from '@stoplight/types';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpAndFileResolverOptions } from '../resolvers/http-and-file';
 import { HumanReadableDiagnosticSeverity, IRuleDefinition } from './rule/types';
-import { JSONSchema } from '../types/spectral';
-import { CustomFunction } from './customFunction/customFunction';
+import { FormatLookup } from '../types/spectral';
 
 export type FileRuleSeverity = DiagnosticSeverity | HumanReadableDiagnosticSeverity | boolean;
 export type FileRulesetSeverity = 'off' | 'recommended' | 'all';
 
-export type FileRule = IRuleDefinition | FileRuleSeverity | [FileRuleSeverity] | [FileRuleSeverity, object];
+export type FileRule = IRuleDefinition | FileRuleSeverity;
 
 export type FileRuleCollection = Dictionary<FileRule, string>;
 
-export type RulesetFunctionCollection = Dictionary<CustomFunction, string>;
 export type RulesetExceptionCollection = Dictionary<string[], string>;
 
 export interface IParserOptions {
@@ -22,19 +20,21 @@ export interface IParserOptions {
 
 export type RulesetDefinition = {
   documentationUrl?: string;
-  formats?: string[];
-  functionsDir?: string;
-  functions?: Array<string | [string, JSONSchema]>;
+  formats?: FormatLookup[];
   except?: RulesetExceptionCollection;
   parserOptions?: IParserOptions;
-} & {
-  extends: Array<string | [string, FileRulesetSeverity]>;
-} & {
-  rules: FileRuleCollection; // todo: make it IRule once validation is in place
-} & {
-  extends: Array<string | [string, FileRulesetSeverity]>;
-  rules: FileRuleCollection;
-};
+} & (
+  | {
+      extends: Array<RulesetDefinition | [RulesetDefinition, FileRulesetSeverity]>;
+    }
+  | {
+      rules: FileRuleCollection;
+    }
+  | {
+      extends: Array<RulesetDefinition | [RulesetDefinition, FileRulesetSeverity]>;
+      rules: FileRuleCollection;
+    }
+);
 
 export interface IRulesetReadOptions extends IHttpAndFileResolverOptions {
   timeout?: number;

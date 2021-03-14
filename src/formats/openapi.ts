@@ -1,4 +1,4 @@
-import { isObject } from 'lodash';
+import { isObject } from '../utils/isObject';
 
 type MaybeOAS2 = Partial<{ swagger: unknown }>;
 type MaybeOAS3 = Partial<{ openapi: unknown }>;

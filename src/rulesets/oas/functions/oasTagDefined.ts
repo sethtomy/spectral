@@ -3,7 +3,7 @@
 
 import type { IFunction, IFunctionResult } from '../../../types';
 import { getAllOperations } from './utils/getAllOperations';
-import { isObject } from './utils/isObject';
+import { isObject } from '../../../utils/isObject';
 
 export const oasTagDefined: IFunction = targetVal => {
   const results: IFunctionResult[] = [];

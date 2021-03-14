@@ -35,8 +35,12 @@ function createRegex(pattern: string): RegExp {
   }
 }
 
-export const pattern: IFunction<IRulePatternOptions> = function (this: IFunctionContext, targetVal, opts) {
+function assertValidOptions(opts): asserts opts is IRulePatternOptions {}
+
+export const pattern: IFunction = function (targetVal, opts) {
   if (typeof targetVal !== 'string') return;
+
+  assertValidOptions(opts);
 
   let results: Optional<IFunctionResult[]>;
 

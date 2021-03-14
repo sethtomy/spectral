@@ -1,4 +1,4 @@
-import { isObject } from './isObject';
+import { isObject } from '../../../../utils/isObject';
 
 const validOperationKeys = ['get', 'head', 'post', 'put', 'patch', 'delete', 'options', 'trace'];
 

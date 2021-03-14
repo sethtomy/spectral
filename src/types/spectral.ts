@@ -4,17 +4,13 @@ import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 import { ComputeFingerprintFunc } from '../utils';
 
 export interface IConstructorOpts {
-  resolver?: IResolver;
+  resolver: IResolver;
   computeFingerprint?: ComputeFingerprintFunc;
   useNimma?: boolean;
-  proxyUri?: string;
 }
 
 export interface IRunOpts {
   ignoreUnknownFormat?: boolean;
-  resolve?: {
-    documentUri?: string;
-  };
 }
 
 export interface IRuleResult extends IDiagnostic {
@@ -22,7 +18,7 @@ export interface IRuleResult extends IDiagnostic {
 }
 
 export interface ISpectralFullResult {
-  resolved: unknown;
+  context: unknown;
   results: IRuleResult[];
 }
 

@@ -1,10 +1,10 @@
 import { DiagnosticSeverity } from '@stoplight/types';
-import { RuleType } from '../../types/enums';
+import { FormatLookup, IFunction } from '../../types';
 
-export interface IRuleDefinition<T = string, O = unknown> {
-  type?: RuleType;
+export interface IRuleDefinition {
+  type?: 'validation' | 'style';
 
-  formats?: string[];
+  formats?: FormatLookup[];
 
   documentationUrl?: string;
 
@@ -28,19 +28,19 @@ export interface IRuleDefinition<T = string, O = unknown> {
   // If undefined or true, resolved data will be supplied
   resolved?: boolean;
 
-  then: IRuleThen<T, O> | Array<IRuleThen<T, O>>;
+  then: IRuleThen | IRuleThen[];
 }
 
-export interface IRuleThen<T = string, O = unknown> {
+export interface IRuleThen {
   // the `path.to.prop` to field, or special `@key` value to target keys for matched `given` object
   // EXAMPLE: if the target object is an oas object and given = `$..responses[*]`, then `@key` would be the response code (200, 400, etc)
   field?: string;
 
   // name of the function to run
-  function: T;
+  function: IFunction;
 
   // Options passed to the function
-  functionOptions?: O;
+  functionOptions?: unknown;
 }
 
 export type HumanReadableDiagnosticSeverity = 'error' | 'warn' | 'info' | 'hint' | 'off';

@@ -1,5 +1,4 @@
 import { Dictionary } from '@stoplight/types';
-import { escapeRegExp } from 'lodash';
 import { IFunction } from '../types';
 
 export enum CasingType {

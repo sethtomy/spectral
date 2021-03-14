@@ -1,4 +1,4 @@
-import { isObject } from 'lodash';
+import { isObject } from '../utils/isObject';
 
 type MaybeAsyncApi2 = Partial<{ asyncapi: unknown }>;
 
