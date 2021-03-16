@@ -1,10 +1,9 @@
 import { Document, STDIN } from '../../../document';
-import { KNOWN_FORMATS } from '../../../formats';
 import { readParsable, IFileReadOptions } from '../../../fs/reader';
 import * as Parsers from '../../../parsers';
 import { IRuleResult, Spectral } from '../../../spectral';
 import { ILintConfig } from '../../../types/config';
-import { getRuleset, listFiles, skipRules, segregateEntriesPerKind, readFileDescriptor } from './utils';
+import { getRuleset, listFiles, segregateEntriesPerKind, readFileDescriptor } from './utils';
 import { getResolver } from './utils/getResolver';
 import { YamlParserResult } from '@stoplight/yaml';
 
@@ -16,19 +15,6 @@ export async function lint(documents: Array<number | string>, flags: ILintConfig
   const ruleset = await getRuleset(flags.ruleset);
   spectral.setRuleset(ruleset);
 
-  for (const [format, lookup, prettyName] of KNOWN_FORMATS) {
-    spectral.registerFormat(format, (document, uri) => {
-      if (lookup(document, uri)) {
-        if (flags.quiet !== true) {
-          console.log(`${prettyName} detected`);
-        }
-
-        return true;
-      }
-
-      return false;
-    });
-  }
 
   if (flags.verbose === true) {
     if (ruleset) {
@@ -66,10 +52,6 @@ export async function lint(documents: Array<number | string>, flags: ILintConfig
     results.push(
       ...(await spectral.run(document, {
         ignoreUnknownFormat: flags.ignoreUnknownFormat,
-        resolve: {
-          documentUri: typeof targetUri === 'number' ? void 0 : targetUri,
-        },
-      })),
     );
   }
 

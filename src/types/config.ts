@@ -16,7 +16,7 @@ export interface ILintConfig {
   format: OutputFormat;
   output?: string;
   resolver?: string;
-  ruleset?: string[];
+  ruleset?: string;
   skipRule?: string[];
   ignoreUnknownFormat: boolean;
   showUnmatchedGlobs: boolean;
