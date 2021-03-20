@@ -1,12 +1,9 @@
 import { Dictionary } from '@stoplight/types';
-import { writeFile } from 'fs';
-import { promisify } from 'util';
+import * as fs from 'fs';
 import { html, json, junit, stylish, teamcity, text } from '../formatters';
 import { Formatter, FormatterOptions } from '../formatters/types';
 import { IRuleResult } from '../../types';
 import { OutputFormat } from '../../types/config';
-
-const writeFileAsync = promisify(writeFile);
 
 const formatters: Dictionary<Formatter, OutputFormat> = {
   json,
@@ -23,7 +20,8 @@ export function formatOutput(results: IRuleResult[], format: OutputFormat, forma
 
 export async function writeOutput(outputStr: string, outputFile?: string) {
   if (outputFile) {
-    return writeFileAsync(outputFile, outputStr);
+    return fs.promises.writeFile(outputFile, outputStr);
   }
+
   console.log(outputStr);
 }

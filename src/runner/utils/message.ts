@@ -1,5 +1,5 @@
 import { Segment } from '@stoplight/types';
-import { isObject } from 'lodash';
+import { isObject } from 'lodash-es';
 import { Replacer } from '../../utils/replacer';
 
 export interface IMessageVars {

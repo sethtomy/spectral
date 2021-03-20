@@ -50,7 +50,7 @@ export const getClosestJsonPath = (data: unknown, path: JsonPath): JsonPath => {
 
   if (!isObject(data)) return closestPath;
 
-  let piece = data;
+  let piece: any = data;
 
   for (const segment of path) {
     if (!(segment in piece)) break;

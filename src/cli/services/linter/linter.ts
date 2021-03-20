@@ -15,16 +15,6 @@ export async function lint(documents: Array<number | string>, flags: ILintConfig
   const ruleset = await getRuleset(flags.ruleset);
   spectral.setRuleset(ruleset);
 
-
-  if (flags.verbose === true) {
-    if (ruleset) {
-      const rules = Object.values(spectral.ruleset.rules);
-      console.info(`Found ${rules.length} rules (${rules.filter(rule => rule.enabled).length} enabled)`);
-    } else {
-      console.info('No rules loaded, attempting to detect document type');
-    }
-  }
-
   const [globs, fileDescriptors] = segregateEntriesPerKind(documents);
   const [targetUris, unmatchedPatterns] = await listFiles(
     globs,
@@ -32,26 +22,19 @@ export async function lint(documents: Array<number | string>, flags: ILintConfig
   );
   const results: IRuleResult[] = [];
 
-  if (unmatchedPatterns.length > 0) {
-    if (flags.failOnUnmatchedGlobs) {
-      throw new Error(`Unmatched glob patterns: \`${unmatchedPatterns.join(',')}\``);
-    }
-
-    for (const unmatchedPattern of unmatchedPatterns) {
-      console.log(`Glob pattern \`${unmatchedPattern}\` did not match any files`);
-    }
+  if (unmatchedPatterns.length > 0 && flags.failOnUnmatchedGlobs) {
+    throw new Error(`Unmatched glob patterns: \`${unmatchedPatterns.join(',')}\``);
   }
 
   for (const targetUri of [...targetUris, ...fileDescriptors]) {
-    if (flags.verbose === true) {
-      console.info(`Linting ${targetUri}`);
-    }
-
     const document = await createDocument(targetUri, { encoding: flags.encoding });
 
     results.push(
-      ...(await spectral.run(document, {
-        ignoreUnknownFormat: flags.ignoreUnknownFormat,
+      ...(
+        await spectral.run(document, {
+          ignoreUnknownFormat: flags.ignoreUnknownFormat,
+        })
+      ).results,
     );
   }
 

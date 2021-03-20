@@ -20,10 +20,12 @@ import {
   typedEnum,
   oasExample,
   oasDocumentSchema,
+  oasOpSecurityDefined,
 } from './functions';
 import type { RulesetDefinition } from '../../ruleset/types';
 
 import * as oas2Schema from './schemas/schema.oas2.json';
+import * as oas3Schema from './schemas/schema.oas3.json';
 
 export { ruleset as default };
 
@@ -659,7 +661,7 @@ const ruleset: RulesetDefinition = {
         function: oasDocumentSchema,
         functionOptions: {
           allErrors: true,
-          schema: require('./schemas/schema.oas3.json'),
+          schema: oas3Schema,
         },
       },
     },

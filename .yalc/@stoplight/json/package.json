@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/json",
-  "version": "0.0.0+334fc775",
+  "version": "0.0.0+a9958667",
   "description": "Useful functions when working with JSON.",
   "keywords": [
     "json",
@@ -20,17 +20,19 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=14"
+    "node": ">=8.3.0"
   },
   "dependencies": {
     "@stoplight/ordered-object-literal": "^1.0.1",
     "@stoplight/types": "^11.9.0",
-    "jsonc-parser": "~3.0.0",
+    "jsonc-parser": "^3.0.0",
     "lodash-es": "^4.17.21",
     "safe-stable-stringify": "^1.1"
   },
-  "main": "index.cjs.js",
-  "module": "index.es.js",
   "typings": "index.d.ts",
-  "yalcSig": "334fc775cc69d1ea21688a9fa19a3d94"
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "yalcSig": "a99586673884c502cb38dae46654c9f0"
 }

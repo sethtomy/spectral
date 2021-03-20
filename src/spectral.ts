@@ -1,18 +1,10 @@
-import { DiagnosticSeverity } from '@stoplight/types';
 import { memoize } from 'lodash-es'; // todo: get rid of that memoize
 
-import { IDocument, IParsedResult} from './document';
+import { IDocument } from './document';
 import { DocumentInventory } from './documentInventory';
 import { Runner, RunnerRuntime } from './runner';
-import {
-  IConstructorOpts,
-  IResolver,
-  IRuleResult,
-  IRunOpts,
-  ISpectralFullResult,
-} from './types';
-import { ComputeFingerprintFunc, defaultComputeResultFingerprint} from './utils';
-import { generateDocumentWideResult } from './utils/generateDocumentWideResult';
+import { IConstructorOpts, IResolver, IRunOpts, ISpectralFullResult } from './types';
+import { ComputeFingerprintFunc, defaultComputeResultFingerprint } from './utils';
 import { Ruleset } from './ruleset/ruleset';
 import { DEFAULT_PARSER_OPTIONS } from './consts';
 import { getDiagnosticSeverity } from './ruleset/utils/severity';
@@ -53,6 +45,7 @@ export class Spectral {
       }
 
       if (diagnostic.severity === -1) {
+        // @ts-expect-error
         document.diagnostics.splice(i, 1);
         i--;
       }
@@ -61,11 +54,9 @@ export class Spectral {
     return document;
   }
 
-  public async run(
-    target: IDocument,
-    opts: IRunOpts = {},
-  ): Promise<ISpectralFullResult> {
-    if (this.ruleset) {
+  public async run(target: IDocument, opts: IRunOpts = {}): Promise<ISpectralFullResult> {
+    const { ruleset } = this;
+    if (!ruleset) {
       throw new Error('no ruleset loaded');
     }
 
@@ -74,26 +65,24 @@ export class Spectral {
     const inventory = new DocumentInventory(document, this._resolver);
     await inventory.resolve();
 
-    // todo: assert ruleset
-
     const runner = new Runner(this.runtime, inventory);
 
     if (document.formats === void 0) {
-      const registeredFormats = Object.keys(this.ruleset.formats);
+      const registeredFormats = Object.keys(ruleset.formats);
       const foundFormats = registeredFormats.filter(format =>
-        this.ruleset.formats[format](inventory.resolved, document.source),
+        ruleset.formats[format](inventory.resolved, document.source),
       );
       if (foundFormats.length === 0 && opts.ignoreUnknownFormat !== true) {
         document.formats = null;
         if (registeredFormats.length > 0) {
-          runner.addResult(this._generateUnrecognizedFormatError(document));
+          // runner.addResult(this._generateUnrecognizedFormatError(document));
         }
       } else {
         document.formats = foundFormats;
       }
     }
 
-    await runner.run(this.ruleset);
+    await runner.run(ruleset);
 
     const results = runner.getResults(this._computeFingerprint);
 
@@ -108,14 +97,5 @@ export class Spectral {
   public setRuleset(ruleset: Ruleset): void {
     this.runtime.revoke();
     this.ruleset = ruleset;
-  }
-
-  private _generateUnrecognizedFormatError(document: IDocument): IRuleResult {
-    return generateDocumentWideResult(
-      document,
-      `The provided document does not match any of the registered formats [${Object.keys(this.formats).join(', ')}]`,
-      DiagnosticSeverity.Warning,
-      'unrecognized-format',
-    );
   }
 }

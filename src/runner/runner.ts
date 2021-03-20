@@ -1,6 +1,7 @@
 import { DiagnosticSeverity, Optional } from '@stoplight/types';
-import { JSONPath, JSONPathCallback } from 'jsonpath-plus';
-import { flatMap, isObject } from 'lodash';
+import * as jp from 'jsonpath-plus';
+import type { JSONPathCallback } from 'jsonpath-plus';
+import { isObject } from 'lodash-es';
 import { JSONPathExpression, traverse } from 'nimma';
 
 import { IDocument, STDIN } from '../document';
@@ -14,6 +15,8 @@ import { IRunnerInternalContext } from './types';
 import { ExceptionLocation, pivotExceptions } from './utils';
 import { Rule } from '../ruleset/rule/rule';
 import { Ruleset } from '../ruleset/ruleset';
+
+const { JSONPath } = jp;
 
 const isStdInSource = (inventory: DocumentInventory): boolean => {
   return inventory.document.source === STDIN;
@@ -137,11 +140,11 @@ export class Runner {
     }
 
     if (optimizedRules.length > 0) {
-      traverse(Object(runnerContext.documentInventory.resolved), flatMap(optimizedRules, pickExpressions));
+      traverse(Object(runnerContext.documentInventory.resolved), optimizedRules.flatMap(pickExpressions));
     }
 
     if (optimizedUnresolvedRules.length > 0) {
-      traverse(Object(runnerContext.documentInventory.unresolved), flatMap(optimizedUnresolvedRules, pickExpressions));
+      traverse(Object(runnerContext.documentInventory.unresolved), optimizedUnresolvedRules.flatMap(pickExpressions));
     }
 
     for (const rule of unoptimizedRules) {

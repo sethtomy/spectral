@@ -24,7 +24,7 @@
  */
 
 import { extname } from '@stoplight/path';
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp } from 'lodash-es';
 import { printPath, PrintStyle } from '../../utils';
 import { Formatter } from './types';
 import { groupBySource, xmlEscape } from './utils';

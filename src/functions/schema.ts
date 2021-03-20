@@ -7,7 +7,7 @@ import * as jsonSpecV7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import * as betterAjvErrors from '@stoplight/better-ajv-errors';
 import { IFunction, IFunctionResult, JSONSchema } from '../types';
 // @ts-ignore
-import oasFormatValidator from 'ajv-oai/lib/format-validator';
+import * as oasFormatValidator from 'ajv-oai/lib/format-validator';
 
 export interface ISchemaFunction extends IFunction<ISchemaOptions> {
   Ajv: typeof AJV;
@@ -112,7 +112,7 @@ const validators = new (class extends WeakMap<JSONSchema, ValidateFunction> {
   }
 })();
 
-export const schema: IFunction = (targetVal, opts, paths, { rule }) => {
+export const schema: ISchemaFunction = (targetVal, opts, paths, { rule }) => {
   const path = paths.target ?? paths.given;
 
   if (targetVal === void 0) {

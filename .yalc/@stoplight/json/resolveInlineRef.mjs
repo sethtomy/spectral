@@ -1,5 +1,5 @@
-import { pointerToPath } from './pointerToPath.mjs';
 import { extractSourceFromRef } from './extractSourceFromRef.mjs';
+import { pointerToPath } from './pointerToPath.mjs';
 
 function isObject(maybeObj) {
     return typeof maybeObj === 'object' && maybeObj !== null;

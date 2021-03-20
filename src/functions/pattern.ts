@@ -1,4 +1,4 @@
-import type { IFunction, IFunctionContext, IFunctionResult } from '../types';
+import type { IFunction, IFunctionResult } from '../types';
 import type { Optional } from '@stoplight/types';
 
 export interface IRulePatternOptions {
@@ -35,7 +35,9 @@ function createRegex(pattern: string): RegExp {
   }
 }
 
-function assertValidOptions(opts): asserts opts is IRulePatternOptions {}
+function assertValidOptions(opts: unknown): asserts opts is IRulePatternOptions {}
+
+const cache = new Map<string, RegExp>();
 
 export const pattern: IFunction = function (targetVal, opts) {
   if (typeof targetVal !== 'string') return;
@@ -45,7 +47,6 @@ export const pattern: IFunction = function (targetVal, opts) {
   let results: Optional<IFunctionResult[]>;
 
   const { match, notMatch } = opts;
-  const cache = this.cache as Map<string, RegExp>;
 
   if (match !== void 0) {
     const pattern = getFromCache(cache, match);

@@ -1,5 +1,3 @@
-const md5 = require('blueimp-md5');
-
 import { uniqBy } from 'lodash-es';
 
 import { IRuleResult } from '../types';
@@ -20,7 +18,7 @@ export const defaultComputeResultFingerprint: ComputeFingerprintFunc = (rule, ha
     id += rule.source;
   }
 
-  return hash(id);
+  return id;
 };
 
 export const prepareResults = (results: IRuleResult[], computeFingerprint: ComputeFingerprintFunc): IRuleResult[] => {

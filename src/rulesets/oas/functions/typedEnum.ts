@@ -1,7 +1,7 @@
-import type { IFunction, IFunctionContext } from '../../../types';
+import type { IFunction } from '../../../types';
 import { schema } from '../../../functions/schema';
 
-export const typedEnum: IFunction = function (this: IFunctionContext, targetVal, opts, paths, otherValues) {
+export const typedEnum: IFunction = function (targetVal, opts, paths, otherValues) {
   if (targetVal === null || typeof targetVal !== 'object') {
     return;
   }

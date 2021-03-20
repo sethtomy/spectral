@@ -109,7 +109,13 @@ function* getSchemaValidationItems(
   }
 }
 
-export const oasExample: IFunction = function (this: IFunctionContext, targetVal, opts, paths, otherValues) {
+export const oasExample: IFunction<IOasExampleOptions> = function (
+  this: IFunctionContext,
+  targetVal,
+  opts,
+  paths,
+  otherValues,
+) {
   if (!isObject(targetVal)) {
     return;
   }

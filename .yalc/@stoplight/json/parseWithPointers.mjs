@@ -1,7 +1,8 @@
-import { visit, printParseErrorCode } from 'jsonc-parser';
 import createOrderedObject, { getOrder } from '@stoplight/ordered-object-literal';
 import { DiagnosticSeverity } from '@stoplight/types';
+import * as jsonc from 'jsonc-parser';
 
+const { printParseErrorCode, visit } = jsonc;
 const parseWithPointers = (value, options = { disallowComments: true }) => {
     const diagnostics = [];
     const { ast, data, lineMap } = parseTree(value, diagnostics, options);

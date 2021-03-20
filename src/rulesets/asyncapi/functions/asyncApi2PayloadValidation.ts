@@ -1,7 +1,7 @@
 import type { ValidateFunction } from 'ajv';
 
-import type { ISchemaFunction } from '../../../functions/schema';
-import type { IFunction, IFunctionContext } from '../../../types';
+import { ISchemaFunction, schema } from '../../../functions/schema';
+import type { IFunction } from '../../../types';
 import * as asyncApi2Schema from '../schemas/schema.asyncapi2.json';
 
 const fakeSchemaObjectId = 'asyncapi2#schemaObject';
@@ -28,16 +28,10 @@ const buildAsyncApi2SchemaObjectValidator = (schemaFn: ISchemaFunction): Validat
   return validator;
 };
 
-export const asyncApi2PayloadValidation: IFunction<null> = function (
-  this: IFunctionContext,
-  targetVal,
-  _opts,
-  paths,
-  otherValues,
-) {
-  const ajvValidationFn = buildAsyncApi2SchemaObjectValidator(this.functions.schema);
+export const asyncApi2PayloadValidation: IFunction = function (targetVal, _opts, paths, otherValues) {
+  const ajvValidationFn = buildAsyncApi2SchemaObjectValidator(schema);
 
-  const results = this.functions.schema(
+  const results = schema(
     targetVal,
     {
       schema: asyncApi2SchemaObject,

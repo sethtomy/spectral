@@ -1,5 +1,5 @@
 import { JsonPath, Optional } from '@stoplight/types';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 
 import { Document } from '../document';
 import { IFunctionResult, IFunctionValues, IGivenNode } from '../types';
@@ -40,23 +40,21 @@ export const lintNode = (
         fnContext,
       );
 
-
       if (targetResults === void 0) continue;
 
       if ('then' in targetResults) {
         context.promises.push(
-          targetResults
-            .then(results =>
-              results === void 0
-                ? void 0
-                : void processTargetResults(
-                    context,
-                    results,
-                    rule,
-                    exceptionLocations,
-                    targetPath, // todo: get rid of it somehow.
-                  ),
-            )
+          targetResults.then(results =>
+            results === void 0
+              ? void 0
+              : void processTargetResults(
+                  context,
+                  results,
+                  rule,
+                  exceptionLocations,
+                  targetPath, // todo: get rid of it somehow.
+                ),
+          ),
         );
       } else {
         processTargetResults(

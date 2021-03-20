@@ -21,26 +21,25 @@
     "url": "https://github.com/stoplightio/spectral"
   },
   "license": "Apache-2.0",
-  "main": "dist/index.js",
   "bin": {
-    "spectral": "./dist/cli/index.js"
+    "spectral": "./dist/cli/index.mjs"
   },
   "files": [
     "dist/*",
     "rulesets/*"
   ],
+  "module": "dist/index.mjs",
+  "type": "module",
   "engines": {
     "node": ">=10.18"
   },
   "scripts": {
     "postinstall": "patch-package",
-    "build.binary": "pkg . --output ./binaries/spectral",
+    "build.binary": "ncc build dist/index.mjs -o ./binaries/spectral",
     "build.clean": "rimraf ./coverage && rimraf ./dist && rimraf ./rulesets && rimraf ./__karma__/__fixtures__",
-    "build.functions": "rollup -c",
-    "build": "tsc -p ./tsconfig.build.json",
+    "build": "rollup -c",
     "cli": "node -r ts-node/register -r tsconfig-paths/register src/cli/index.ts",
     "cli:debug": "node -r ts-node/register -r tsconfig-paths/register --inspect-brk src/cli/index.ts",
-    "generate-assets": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./scripts/generate-assets.ts",
     "inline-version": "node ./scripts/inline-version.js",
     "prelint": "tsc --noEmit",
     "lint.changelog": "kacl lint",
@@ -49,11 +48,8 @@
     "lint.prettier": "prettier --ignore-path .eslintignore --check {src,test-harness}/**/*.{json,yaml} docs/**/*.md README.md",
     "lint": "yarn lint.prettier && yarn lint.eslint && yarn lint.changelog",
     "copy.html-templates": "copyfiles -u 1 \"./src/cli/formatters/html/*.html\" \"./dist/\"",
-    "postbuild": "yarn build.functions && yarn generate-assets",
-    "prebuild": "yarn build.clean && copyfiles -u 1 \"src/rulesets/{oas,asyncapi}/**/*.json\" dist && copyfiles -u 1 \"src/rulesets/{oas,asyncapi}/**/*.json\" ./ && yarn copy.html-templates",
-    "prebuild.binary": "yarn build",
+    "prebuild": "yarn build.clean && yarn copy.html-templates",
     "pretest.karma": "node ./scripts/generate-karma-fixtures.js && yarn pretest",
-    "pretest": "yarn generate-assets",
     "schema.update": "yarn typescript-json-schema --id \"http://stoplight.io/schemas/rule.schema.json\" --required tsconfig.json IRule --out ./src/meta/rule.schema.json",
     "test.harness": "jest -c ./test-harness/jest.config.js",
     "test.karma": "karma start",
@@ -62,16 +58,22 @@
     "test.watch": "yarn test --watch",
     "test": "jest --silent"
   },
+  "resolutions": {
+    "@stoplight/types": "file:.yalc/@stoplight/types",
+    "@stoplight/json": "file:.yalc/@stoplight/json",
+    "@stoplight/path": "file:.yalc/@stoplight/path",
+    "@stoplight/yaml": "file:.yalc/@stoplight/yaml"
+  },
   "dependencies": {
     "@sindresorhus/fnv1a": "^2.0.1",
     "@stoplight/better-ajv-errors": "0.0.4",
     "@stoplight/json": "file:.yalc/@stoplight/json",
     "@stoplight/json-ref-readers": "1.2.1",
-    "@stoplight/json-ref-resolver": "3.1.0",
+    "@stoplight/json-ref-resolver": "file:.yalc/@stoplight/json-ref-resolver",
     "@stoplight/lifecycle": "2.3.1",
-    "@stoplight/path": "1.3.2",
-    "@stoplight/types": "^11.9.0",
-    "@stoplight/yaml": "4.2.1",
+    "@stoplight/path": "file:.yalc/@stoplight/path",
+    "@stoplight/types": "file:.yalc/@stoplight/types",
+    "@stoplight/yaml": "file:.yalc/@stoplight/yaml",
     "abort-controller": "3.0.0",
     "ajv": "6.12.5",
     "ajv-oai": "1.2.0",
@@ -110,6 +112,7 @@
     "@types/xml2js": "^0.4.7",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
+    "@vercel/ncc": "^0.27.0",
     "copyfiles": "^2.4.1",
     "dependency-graph": "^0.9.0",
     "eslint": "^7.22.0",
@@ -136,6 +139,7 @@
     "recast": "^0.20.4",
     "rimraf": "^3.0.2",
     "rollup": "^2.36.1",
+    "rollup-plugin-preserve-shebang": "^1.0.1",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.29.0",
     "ts-jest": "^25.5.1",

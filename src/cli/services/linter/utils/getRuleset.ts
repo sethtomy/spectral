@@ -1,22 +1,28 @@
-import { isAbsolute, resolve } from '@stoplight/path';
 import { Optional } from '@stoplight/types';
+import { Ruleset } from '../../../../ruleset/ruleset';
+import * as fs from 'fs';
+import * as path from '@stoplight/path';
+import { isDefaultRulesetFile } from '../../../../ruleset/utils';
 
-async function loadRulesets(cwd: string, rulesetFiles: string[]): Promise<IRuleset> {
-  if (rulesetFiles.length === 0) {
-    return {
-      functions: {},
-      rules: {},
-      exceptions: {},
-    };
+async function getDefaultRulesetFile(): Promise<Optional<string>> {
+  const cwd = process.cwd();
+  for (const filename of await fs.promises.readdir(cwd)) {
+    if (isDefaultRulesetFile(filename)) {
+      return path.join(cwd, filename);
+    }
   }
 
-  return readRuleset(rulesetFiles.map(file => (isAbsolute(file) ? file : resolve(cwd, file))));
+  return;
 }
 
-export async function getRuleset(rulesetFile: Optional<string>): Promise<IRuleset> {
-  const rulesetFiles = rulesetFile ?? (await getDefaultRulesetFile(process.cwd()));
+export async function getRuleset(rulesetFile: Optional<string>): Promise<Ruleset> {
+  if (rulesetFile === void 0) {
+    rulesetFile = await getDefaultRulesetFile();
+  }
 
-  return await (rulesetFiles !== null
-    ? loadRulesets(process.cwd(), Array.isArray(rulesetFiles) ? rulesetFiles : [rulesetFiles])
-    : readRuleset(KNOWN_RULESETS));
+  if (rulesetFile === void 0) {
+    throw new Error('No ruleset specified');
+  }
+
+  return new Ruleset(await import(rulesetFile), { severity: 'recommended' });
 }

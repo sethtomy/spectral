@@ -1,6 +1,6 @@
 import { normalize } from '@stoplight/path';
 import { DeepReadonly, GetLocationForJsonPath, IParserResult, IRange, JsonPath, Optional } from '@stoplight/types';
-import { isObjectLike } from 'lodash';
+import { isObjectLike } from 'lodash-es';
 import { formatParserDiagnostics } from './errorMessages';
 import { IParser } from './parsers/types';
 import { IRuleResult } from './types';

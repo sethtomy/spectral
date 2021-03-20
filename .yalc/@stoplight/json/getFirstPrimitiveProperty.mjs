@@ -1,5 +1,6 @@
-import { createScanner } from 'jsonc-parser';
+import * as jsonc from 'jsonc-parser';
 
+const { createScanner, SyntaxKind } = jsonc;
 const getFirstPrimitiveProperty = (text) => {
     const scanner = createScanner(text, true);
     scanner.scan();

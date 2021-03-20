@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 
 import type { Spectral } from '../../../spectral';
 import { DiagnosticSeverity } from '@stoplight/types';

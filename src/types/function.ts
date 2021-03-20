@@ -6,9 +6,9 @@ export interface IFunctionContext {
   cache: Map<unknown, unknown>;
 }
 
-export type IFunction = (
-  targetValue: unknown,
-  options: unknown,
+export type IFunction<x = any> = (
+  targetValue: any,
+  options: any,
   paths: IFunctionPaths,
   otherValues: IFunctionValues,
 ) => void | IFunctionResult[] | Promise<void | IFunctionResult[]>;

@@ -1,6 +1,6 @@
 import * as AJV from 'ajv';
-import { ISchemaOptions, schema } from '../../../functions/schema';
-import { IFunction, IFunctionContext, IFunctionResult } from '../../../types';
+import { schema } from '../../../functions/schema';
+import { IFunction, IFunctionResult } from '../../../types';
 
 function shouldIgnoreError(error: AJV.ErrorObject): boolean {
   return (
@@ -59,8 +59,8 @@ function applyManualReplacements(errors: IFunctionResult[]): void {
   }
 }
 
-export const oasDocumentSchema: IFunction = function (this: IFunctionContext, targetVal, opts, ...args) {
-  const errors = schema.call(this, targetVal, { ...opts, prepareResults }, ...args);
+export const oasDocumentSchema: IFunction = function (targetVal, opts, ...args) {
+  const errors = schema(targetVal, { ...opts, prepareResults }, ...args);
 
   if (Array.isArray(errors)) {
     applyManualReplacements(errors);

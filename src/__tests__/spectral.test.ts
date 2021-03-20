@@ -1,7 +1,7 @@
 import { IGraphNodeData } from '@stoplight/json-ref-resolver/types';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { DepGraph } from 'dependency-graph';
-import { escapeRegExp, merge } from 'lodash';
+import { escapeRegExp, merge } from 'lodash-es';
 
 import { Document } from '../document';
 import * as Parsers from '../parsers';

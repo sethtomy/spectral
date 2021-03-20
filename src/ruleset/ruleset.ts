@@ -1,14 +1,9 @@
 import { assertValidRule, assertValidRuleset } from './validation';
 import { Rule } from './rule/rule';
-import {
-  IParserOptions,
-  RulesetDefinition,
-  FileRulesetSeverity,
-  RulesetExceptionCollection,
-} from './types';
+import { IParserOptions, RulesetDefinition, FileRulesetSeverity, RulesetExceptionCollection } from './types';
 import { DEFAULT_PARSER_OPTIONS } from '../consts';
 import { mergeRules } from './mergers/rules';
-import {FormatLookup} from "../types";
+import { FormatLookup } from '../types';
 // import { mergeExceptions } from './mergers/exceptions';
 
 type RulesetContext = {
@@ -16,23 +11,30 @@ type RulesetContext = {
 };
 
 export class Ruleset {
-  protected extends: [Ruleset, FileRulesetSeverity][] | null;
-  protected formats = new Set<FormatLookup>();
+  protected extends: Ruleset[];
+  public formats = new Set<FormatLookup>();
 
   constructor(protected readonly definition: RulesetDefinition, protected readonly context: RulesetContext) {
     assertValidRuleset(definition);
 
     this.extends =
+      'extends' in definition
+        ? definition.extends.map(extension =>
+            Array.isArray(extension)
+              ? new Ruleset(extension[0], { severity: extension[1] })
+              : new Ruleset(extension, { severity: 'recommended' }),
+          )
+        : [];
   }
 
   public get exceptions(): RulesetExceptionCollection | null {
-    if ((this.extends === null || this.extends.length === 0) && this.definition.except === void 0) {
+    if (this.extends.length === 0 && this.definition.except === void 0) {
       return null;
     }
 
     const exceptions: RulesetExceptionCollection = {};
 
-    if (this.extends !== null && this.extends.length > 0) {
+    if (this.extends.length > 0) {
       for (const extendedRuleset of this.extends) {
         Object.assign(exceptions, extendedRuleset.exceptions);
       }
@@ -52,9 +54,10 @@ export class Ruleset {
         assertValidRule(rule); // todo: move it to json schema
         rules[name] = new Rule(name, rule);
 
-
-        for (const format of rule.formats) {
-          this.formats.add(format);
+        if (rule.formats !== void 0) {
+          for (const format of rule.formats) {
+            this.formats.add(format);
+          }
         }
       }
 
@@ -64,12 +67,14 @@ export class Ruleset {
     const rules: Record<string, Rule> = {};
 
     if (this.extends.length > 0) {
-      for (const [extendedRuleset] of this.extends) {
+      for (const extendedRuleset of this.extends) {
         Object.assign(rules, extendedRuleset.rules);
       }
     }
 
-    mergeRules(rules, this.definition.rules);
+    if ('rules' in this.definition) {
+      mergeRules(rules, this.definition.rules);
+    }
 
     for (const [name, rule] of Object.entries(rules)) {
       if (rule.isInherited) {
@@ -85,8 +90,10 @@ export class Ruleset {
         rule.formats = this.definition.formats;
       }
 
-      for (const format of rule.formats) {
-        this.formats.add(format);
+      if (rule.formats !== void 0) {
+        for (const format of rule.formats) {
+          this.formats.add(format);
+        }
       }
     }
 

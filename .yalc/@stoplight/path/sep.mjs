@@ -1,0 +1,3 @@
+const sep = '/';
+
+export { sep };
