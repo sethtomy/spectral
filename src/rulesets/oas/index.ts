@@ -19,6 +19,7 @@ import {
   refSiblings,
   typedEnum,
   oasExample,
+  oasUnusedComponent,
   oasDocumentSchema,
   oasOpSecurityDefined,
 } from './functions';
@@ -155,6 +156,23 @@ const ruleset: RulesetDefinition = {
       then: {
         field: 'info.license.url',
         function: truthy,
+      },
+    },
+    'duplicated-entry-in-enum': {
+      description: 'Enum values should not have duplicate entry.',
+      type: 'validation',
+      severity: 'warn',
+      recommended: true,
+      message: 'A duplicated entry in the enum was found. Error: {{error}}',
+      given: '$..enum',
+      then: {
+        function: schema,
+        functionOptions: {
+          schema: {
+            type: 'array',
+            uniqueItems: true,
+          },
+        },
       },
     },
     'no-eval-in-markdown': {
@@ -665,18 +683,15 @@ const ruleset: RulesetDefinition = {
         },
       },
     },
-    'oas3-unused-components-schema': {
-      description: 'Potentially unused components schema has been detected.',
+    'oas3-unused-component': {
+      description: 'Potentially unused component has been detected.',
       recommended: true,
       formats: [oas3],
       type: 'style',
       resolved: false,
-      given: '$.components.schemas',
+      given: '$',
       then: {
-        function: unreferencedReusableObject,
-        functionOptions: {
-          reusableObjectsLocation: '#/components/schemas',
-        },
+        function: oasUnusedComponent,
       },
     },
   },

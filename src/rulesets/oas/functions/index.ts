@@ -8,4 +8,5 @@ export { default as typedEnum } from './typedEnum';
 export { default as refSiblings } from './refSiblings';
 export { default as oasPathParam } from './oasPathParam';
 export { default as oasTagDefined } from './oasTagDefined';
+export { default as oasUnusedComponent } from './oasUnusedComponent';
 export { default as oasOpIdUnique } from './oasOpIdUnique';

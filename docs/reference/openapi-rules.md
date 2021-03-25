@@ -397,6 +397,44 @@ TheBadModel:
         - 8
 ```
 
+### duplicated-entry-in-enum
+
+Each value of an `enum` must be different from one another.
+
+**Recommended:** Yes
+
+**Good Example**
+
+```yaml
+TheGoodModel:
+  type: object
+  properties:
+    number_of_connectors:
+      type: integer
+      description: The number of extension points.
+      enum:
+        - 1
+        - 2
+        - 4
+        - 8
+```
+
+**Bad Example**
+
+```yaml
+TheBadModel:
+  type: object
+  properties:
+    number_of_connectors:
+      type: integer
+      description: The number of extension points.
+      enum:
+        - 1
+        - 2
+        - 3
+        - 2
+```
+
 ## OpenAPI v2.0-only
 
 These rules will only apply to OpenAPI v2.0 documents.
@@ -576,9 +614,9 @@ servers:
   - url: https://example.com/api/
 ```
 
-### oas3-unused-components-schema
+### oas3-unused-component
 
-Potential unused reusable `schema` entry has been detected.
+Potential unused reusable `components` entry has been detected.
 
 _Warning:_ This rule may identify false positives when linting a specification
 that acts as a library (a container storing reusable objects, leveraged by other

@@ -5,6 +5,10 @@ import { ValidationError } from '../../../ruleset/validation';
 import { ILintConfig } from '../../../types/config';
 import lintCommand from '../../commands/lint';
 import { lint } from '../linter';
+import * as http from 'http';
+import * as url from 'url';
+import { DEFAULT_REQUEST_OPTIONS } from '../../../request';
+import * as ProxyAgent from 'proxy-agent';
 
 jest.mock('../output');
 
@@ -391,7 +395,7 @@ describe('Linter service', () => {
             source: join(process.cwd(), 'src/__tests__/__fixtures__/petstore.invalid-schema.oas3.json'),
           }),
           expect.objectContaining({
-            code: 'oas3-unused-components-schema',
+            code: 'oas3-unused-component',
             path: ['components', 'schemas', 'Pets'],
             source: join(process.cwd(), 'src/__tests__/__fixtures__/petstore.invalid-schema.oas3.json'),
           }),
@@ -562,7 +566,7 @@ describe('Linter service', () => {
         expect.objectContaining({
           code: 'oas2-schema',
           message: 'Property `foo` is not expected to be here.',
-          path: ['paths'],
+          path: ['paths', 'foo'],
           range: {
             end: {
               character: 13,
@@ -570,14 +574,14 @@ describe('Linter service', () => {
             },
             start: {
               character: 10,
-              line: 6,
+              line: 8,
             },
           },
           source: expect.stringContaining('__tests__/__fixtures__/draft-ref.oas2.json'),
         }),
         expect.objectContaining({
           code: 'oas2-schema',
-          message: 'Property `foo` is not expected to be here.',
+          message: '`info` property should have required property `title`.',
           path: ['definitions', 'info'],
           range: {
             end: {
@@ -587,6 +591,22 @@ describe('Linter service', () => {
             start: {
               character: 12,
               line: 3,
+            },
+          },
+          source: expect.stringContaining('/__tests__/__fixtures__/refs/info.json'),
+        }),
+        expect.objectContaining({
+          code: 'oas2-schema',
+          message: 'Property `foo` is not expected to be here.',
+          path: ['definitions', 'info', 'foo'],
+          range: {
+            end: {
+              character: 18,
+              line: 4,
+            },
+            start: {
+              character: 13,
+              line: 4,
             },
           },
           source: expect.stringContaining('/__tests__/__fixtures__/refs/info.json'),
@@ -685,7 +705,7 @@ describe('Linter service', () => {
         }),
         expect.objectContaining({
           code: 'oas2-schema',
-          message: 'Property `response` is not expected to be here.',
+          message: '`get` property should have required property `responses`.',
           path: ['paths', '/test', 'get'],
           range: {
             end: {
@@ -747,6 +767,22 @@ describe('Linter service', () => {
           },
           source: expect.stringContaining('__tests__/__fixtures__/refs/paths.json'),
         }),
+        expect.objectContaining({
+          code: 'oas2-schema',
+          message: 'Property `response` is not expected to be here.',
+          path: ['paths', '/test', 'get', 'response'],
+          range: {
+            end: {
+              character: 25,
+              line: 4,
+            },
+            start: {
+              character: 20,
+              line: 4,
+            },
+          },
+          source: expect.stringContaining('__tests__/__fixtures__/refs/paths.json'),
+        }),
       ]);
     });
   });
@@ -769,6 +805,61 @@ describe('Linter service', () => {
           }),
         ]),
       );
+    });
+  });
+
+  describe('proxy', () => {
+    let server: http.Server;
+    const PORT = 4001;
+
+    beforeAll(() => {
+      // nock cannot mock proxied requests
+      server = http
+        .createServer((req, res) => {
+          const { pathname } = url.parse(String(req.url));
+          if (pathname === '/custom-ruleset') {
+            res.writeHead(403);
+          } else if (pathname === '/ok.json') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(
+              JSON.stringify({
+                info: {
+                  title: '',
+                  description: 'Foo',
+                },
+              }),
+            );
+          } else {
+            res.writeHead(404);
+          }
+
+          res.end();
+        })
+        .listen(PORT, '0.0.0.0');
+    });
+
+    afterAll(() => {
+      server.close();
+    });
+
+    describe('when agent is set', () => {
+      beforeEach(() => {
+        DEFAULT_REQUEST_OPTIONS.agent = new ProxyAgent(`http://localhost:${PORT}`) as any;
+      });
+
+      afterEach(() => {
+        delete DEFAULT_REQUEST_OPTIONS.agent;
+      });
+
+      describe('loading a ruleset', () => {
+        it('proxies the request', async () => {
+          await expect(
+            run(`lint --ruleset http://localhost:4000/custom-ruleset src/__tests__/__fixtures__/petstore.oas3.json`),
+          ).rejects.toThrowErrorMatchingInlineSnapshot(
+            `"Could not parse http://localhost:4000/custom-ruleset: Forbidden"`,
+          );
+        });
+      });
     });
   });
 });

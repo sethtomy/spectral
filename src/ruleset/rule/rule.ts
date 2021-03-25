@@ -77,7 +77,9 @@ export class Rule {
     }
   }
 
-  public merge(rule: Partial<IRuleDefinition>) {}
+  public merge(rule: Partial<IRuleDefinition>) {
+    // todo:
+  }
 
   public clone(): Rule {
     return new Rule(this.name, this);

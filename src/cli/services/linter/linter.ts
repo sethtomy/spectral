@@ -10,9 +10,11 @@ import { YamlParserResult } from '@stoplight/yaml';
 export async function lint(documents: Array<number | string>, flags: ILintConfig): Promise<IRuleResult[]> {
   const spectral = new Spectral({
     resolver: getResolver(flags.resolver),
+    proxyUri: process.env.PROXY,
   });
 
   const ruleset = await getRuleset(flags.ruleset);
+
   spectral.setRuleset(ruleset);
   if (flags.verbose === true) {
     if (ruleset) {
