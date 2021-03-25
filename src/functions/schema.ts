@@ -1,13 +1,12 @@
 import { Optional } from '@stoplight/types';
 import * as AJV from 'ajv';
-import type { ValidateFunction } from 'ajv';
+import { ValidateFunction } from 'ajv';
 import * as jsonSpecV4 from 'ajv/lib/refs/json-schema-draft-04.json';
 import * as jsonSpecV6 from 'ajv/lib/refs/json-schema-draft-06.json';
 import * as jsonSpecV7 from 'ajv/lib/refs/json-schema-draft-07.json';
 import * as betterAjvErrors from '@stoplight/better-ajv-errors';
 import { IFunction, IFunctionResult, JSONSchema } from '../types';
-// @ts-ignore
-import * as oasFormatValidator from 'ajv-oai/lib/format-validator';
+const oasFormatValidator = require('ajv-oai/lib/format-validator');
 
 export interface ISchemaFunction extends IFunction<ISchemaOptions> {
   Ajv: typeof AJV;

@@ -1,7 +1,6 @@
 import { DiagnosticSeverity, Optional } from '@stoplight/types';
-import * as jp from 'jsonpath-plus';
-import type { JSONPathCallback } from 'jsonpath-plus';
-import { isObject } from 'lodash-es';
+import { JSONPath, JSONPathCallback } from 'jsonpath-plus';
+import { isObject } from 'lodash';
 import { JSONPathExpression, traverse } from 'nimma';
 
 import { IDocument, STDIN } from '../document';
@@ -15,8 +14,6 @@ import { IRunnerInternalContext } from './types';
 import { ExceptionLocation, pivotExceptions } from './utils';
 import { Rule } from '../ruleset/rule/rule';
 import { Ruleset } from '../ruleset/ruleset';
-
-const { JSONPath } = jp;
 
 const isStdInSource = (inventory: DocumentInventory): boolean => {
   return inventory.document.source === STDIN;

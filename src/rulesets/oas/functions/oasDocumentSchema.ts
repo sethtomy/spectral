@@ -59,7 +59,7 @@ function applyManualReplacements(errors: IFunctionResult[]): void {
   }
 }
 
-export const oasDocumentSchema: IFunction = function (targetVal, opts, ...args) {
+export const oasDocumentSchema: IFunction<any> = function (targetVal, opts, ...args) {
   const errors = schema(targetVal, { ...opts, prepareResults }, ...args);
 
   if (Array.isArray(errors)) {

@@ -1,3 +1,0 @@
-const sep = '/';
-
-export { sep };

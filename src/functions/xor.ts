@@ -5,7 +5,7 @@ export interface IXorRuleOptions {
   properties: string[];
 }
 
-export const xor: IFunction = (targetVal, opts) => {
+export const xor: IFunction<IXorRuleOptions> = (targetVal, opts) => {
   const { properties } = opts;
 
   if (targetVal === null || typeof targetVal !== 'object' || properties.length !== 2) return;

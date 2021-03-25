@@ -1,8 +1,6 @@
 import { JsonPath, Optional } from '@stoplight/types';
-import * as jp from 'jsonpath-plus';
-import { get, isObject, toPath } from 'lodash-es';
-
-const JSONPath = jp.JSONPath;
+import { JSONPath } from 'jsonpath-plus';
+import { get, isObject, toPath } from 'lodash';
 
 export interface ILintTarget {
   path: JsonPath;

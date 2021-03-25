@@ -1,6 +1,6 @@
 import { IResolveError } from '@stoplight/json-ref-resolver/types';
 import { DiagnosticSeverity, IDiagnostic, JsonPath, Segment } from '@stoplight/types';
-import { uniqBy } from 'lodash-es';
+import { uniqBy } from 'lodash';
 import { Document, IDocument } from './document';
 import { IRuleResult } from './types';
 

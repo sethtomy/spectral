@@ -2,13 +2,11 @@ import { JsonPath } from '@stoplight/types';
 import { DocumentInventory } from '../documentInventory';
 import type { Rule } from '../ruleset/rule/rule';
 
-export interface IFunctionContext {
-  cache: Map<unknown, unknown>;
-}
+export interface IFunctionContext {}
 
-export type IFunction<x = any> = (
+export type IFunction<O extends object | null = null> = (
   targetValue: any,
-  options: any,
+  options: O extends null ? null : O,
   paths: IFunctionPaths,
   otherValues: IFunctionValues,
 ) => void | IFunctionResult[] | Promise<void | IFunctionResult[]>;

@@ -24,13 +24,12 @@ export default {
       tsconfig: path.join(BASE_PATH, './tsconfig.rollup.json'),
     }),
     json(),
-    // terser(),
   ],
   output: {
     dir: 'dist',
-    entryFileNames: `[name].mjs`,
+    entryFileNames: `[name].js`,
     preserveModules: true, // or `false` to bundle as a single file
     preserveModulesRoot: 'src',
-    format: 'esm',
+    format: 'cjs',
   },
 };

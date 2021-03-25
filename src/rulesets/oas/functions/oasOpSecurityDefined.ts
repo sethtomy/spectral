@@ -16,7 +16,9 @@ function _get(value: unknown, path: JsonPath): unknown {
   return value;
 }
 
-export const oasOpSecurityDefined: IFunction = (targetVal, options) => {
+export const oasOpSecurityDefined: IFunction<{
+  schemesPath: JsonPath;
+}> = (targetVal, options) => {
   const results: IFunctionResult[] = [];
 
   const { schemesPath } = options;

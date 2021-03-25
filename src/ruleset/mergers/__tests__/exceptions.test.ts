@@ -1,4 +1,4 @@
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'lodash';
 import { RulesetExceptionCollection } from '../../../types/ruleset';
 import { mergeExceptions } from '../exceptions';
 

@@ -1,7 +1,7 @@
 import type { Spectral } from '../../../spectral';
 import { createWithRules } from './__helpers__/createWithRules';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'lodash';
 
 const ruleName = 'asyncapi-payload';
 

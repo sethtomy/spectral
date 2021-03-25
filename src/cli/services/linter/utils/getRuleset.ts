@@ -24,5 +24,5 @@ export async function getRuleset(rulesetFile: Optional<string>): Promise<Ruleset
     throw new Error('No ruleset specified');
   }
 
-  return new Ruleset(await import(rulesetFile), { severity: 'recommended' });
+  return new Ruleset(require(rulesetFile), { severity: 'recommended' });
 }

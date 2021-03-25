@@ -1,5 +1,5 @@
+import { isObject } from 'lodash';
 import { IFunction } from '../types';
-import { isObject } from '../utils/isObject';
 
 export interface IAlphaRuleOptions {
   /** if sorting array of objects, which key to use for comparison */

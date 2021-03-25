@@ -37,7 +37,7 @@ export interface IRuleThen {
   field?: string;
 
   // name of the function to run
-  function: IFunction;
+  function: IFunction<any>;
 
   // Options passed to the function
   functionOptions?: unknown;

@@ -4,7 +4,7 @@ import { ICache, IGraphNodeData, IUriParser } from '@stoplight/json-ref-resolver
 import { extname, resolve } from '@stoplight/path';
 import { Dictionary, IParserResult, JsonPath } from '@stoplight/types';
 import { DepGraph } from 'dependency-graph';
-import { get, isObjectLike } from 'lodash-es';
+import { get, isObjectLike } from 'lodash';
 import { Document, IDocument } from './document';
 
 import { formatParserDiagnostics, formatResolverErrors } from './errorMessages';

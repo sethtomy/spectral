@@ -1,5 +1,5 @@
 import { JsonPath, Optional } from '@stoplight/types';
-import { get } from 'lodash-es';
+import { get } from 'lodash';
 
 import { Document } from '../document';
 import { IFunctionResult, IFunctionValues, IGivenNode } from '../types';

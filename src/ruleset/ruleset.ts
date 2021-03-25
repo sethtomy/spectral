@@ -1,4 +1,4 @@
-import { assertValidRule, assertValidRuleset } from './validation';
+import { assertValidRule } from './validation';
 import { Rule } from './rule/rule';
 import { IParserOptions, RulesetDefinition, FileRulesetSeverity, RulesetExceptionCollection } from './types';
 import { DEFAULT_PARSER_OPTIONS } from '../consts';
@@ -15,7 +15,7 @@ export class Ruleset {
   public formats = new Set<FormatLookup>();
 
   constructor(protected readonly definition: RulesetDefinition, protected readonly context: RulesetContext) {
-    assertValidRuleset(definition);
+    // assertValidRuleset(definition);
 
     this.extends =
       'extends' in definition

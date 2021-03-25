@@ -1,5 +1,5 @@
 import * as AJV from 'ajv';
-import { isObject } from 'lodash-es';
+import { isObject } from 'lodash';
 
 import * as ruleSchema from '../meta/rule.schema.json';
 import * as rulesetSchema from '../meta/ruleset.schema.json';

@@ -1,5 +1,5 @@
 import { Dictionary } from '@stoplight/types';
-import { pick } from 'lodash-es';
+import { pick } from 'lodash';
 import { ReadStream } from 'tty';
 import { CommandModule, showHelp } from 'yargs';
 

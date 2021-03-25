@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'lodash';
 
 import type { Spectral } from '../../../spectral';
 import { createWithRules } from './__helpers__/createWithRules';

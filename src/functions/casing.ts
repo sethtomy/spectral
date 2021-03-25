@@ -1,6 +1,6 @@
 import { Dictionary } from '@stoplight/types';
+import { escapeRegExp } from 'lodash';
 import { IFunction } from '../types';
-import { escapeRegExp } from 'lodash-es';
 
 export enum CasingType {
   flat = 'flat',

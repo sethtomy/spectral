@@ -1,4 +1,4 @@
-import type { IFunction, IFunctionResult } from '../types';
+import type { IFunction, IFunctionContext, IFunctionResult } from '../types';
 import type { Optional } from '@stoplight/types';
 
 export interface IRulePatternOptions {
@@ -13,7 +13,9 @@ export interface IRulePatternOptions {
 // the available flags are "gimsuy" as described here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
 const REGEXP_PATTERN = /^\/(.+)\/([a-z]*)$/;
 
-function getFromCache(cache: Map<string, RegExp>, pattern: string): RegExp {
+const cache = new Map();
+
+function getFromCache(pattern: string): RegExp {
   const existingPattern = cache.get(pattern);
   if (existingPattern !== void 0) {
     return existingPattern;
@@ -35,21 +37,15 @@ function createRegex(pattern: string): RegExp {
   }
 }
 
-function assertValidOptions(opts: unknown): asserts opts is IRulePatternOptions {}
-
-const cache = new Map<string, RegExp>();
-
-export const pattern: IFunction = function (targetVal, opts) {
+export const pattern: IFunction<IRulePatternOptions> = function (this: IFunctionContext, targetVal, opts) {
   if (typeof targetVal !== 'string') return;
-
-  assertValidOptions(opts);
 
   let results: Optional<IFunctionResult[]>;
 
   const { match, notMatch } = opts;
 
   if (match !== void 0) {
-    const pattern = getFromCache(cache, match);
+    const pattern = getFromCache(match);
 
     if (!pattern.test(targetVal)) {
       results = [
@@ -61,7 +57,7 @@ export const pattern: IFunction = function (targetVal, opts) {
   }
 
   if (notMatch !== void 0) {
-    const pattern = getFromCache(cache, notMatch);
+    const pattern = getFromCache(notMatch);
 
     if (pattern.test(targetVal)) {
       const result = {

@@ -1,6 +1,6 @@
 import { normalize } from '@stoplight/path';
 import { DeepReadonly, GetLocationForJsonPath, IParserResult, IRange, JsonPath, Optional } from '@stoplight/types';
-import { isObjectLike } from 'lodash-es';
+import { isObjectLike } from 'lodash';
 import { formatParserDiagnostics } from './errorMessages';
 import { IParser } from './parsers/types';
 import { IRuleResult } from './types';
@@ -17,6 +17,9 @@ export interface IDocument<D = unknown> {
   data: D;
 }
 
+export function normalizeSource(source: undefined): null;
+export function normalizeSource(source: string): string;
+export function normalizeSource(source: Optional<string>): string | null;
 export function normalizeSource(source: Optional<string>): string | null {
   if (source === void 0) return null;
   return source.length > 0 && !startsWithProtocol(source) ? normalize(source) : source;

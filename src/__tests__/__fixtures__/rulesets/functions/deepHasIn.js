@@ -1,4 +1,4 @@
-const { hasIn } = require('lodash-es');
+const { hasIn } = require('lodash');
 
 module.exports = (targetVal, opts) => {
   if (!hasIn(targetVal, opts.path)) {
