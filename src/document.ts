@@ -11,7 +11,7 @@ export const STDIN = '<STDIN>';
 export interface IDocument<D = unknown> {
   readonly source: string | null;
   readonly diagnostics: ReadonlyArray<IRuleResult>;
-  formats?: string[] | null;
+  formats?: any[] | null;
   getRangeForJsonPath(path: JsonPath, closest?: boolean): Optional<IRange>;
   trapAccess<T extends object = object>(obj: T): T;
   data: D;

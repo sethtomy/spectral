@@ -1,5 +1,5 @@
 import { Dictionary } from '@stoplight/types';
-import * as expression from 'expression-eval';
+import { eval, parse } from 'expression-eval';
 
 export type Transformer<V = object> = (this: V, ...args: unknown[]) => string;
 
@@ -24,7 +24,7 @@ export class Replacer<V extends object> {
       if (shouldEvaluate) {
         try {
           return String(
-            expression.eval(expression.parse(identifier), {
+            eval(parse(identifier), {
               ...Object.entries(this.functions).reduce((fns, [name, fn]) => {
                 fns[name] = fn.bind(values);
                 return fns;

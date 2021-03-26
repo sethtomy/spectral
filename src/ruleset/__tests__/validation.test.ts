@@ -1,5 +1,5 @@
 import { JSONSchema7 } from 'json-schema';
-import { assertValidRuleset, decorateIFunctionWithSchemaValidation, ValidationError } from '../validation';
+import { assertValidRuleset, ValidationError } from '../validation';
 const invalidRuleset = require('./__fixtures__/invalid-ruleset.json');
 const validRuleset = require('./__fixtures__/valid-flat-ruleset.json');
 

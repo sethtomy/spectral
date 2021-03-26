@@ -7,6 +7,7 @@ import { hasIntersectingElement } from '../../utils/hasIntersectingElement';
 import { IDocument } from '../../document';
 import { IRuleDefinition, IRuleThen } from './types';
 import { FormatLookup, IGivenNode } from '../../types';
+import { Ruleset } from '../ruleset';
 
 export class Rule {
   public description: string | null;
@@ -22,24 +23,26 @@ export class Rule {
 
   public expressions?: JSONPathExpression[] | null;
 
-  public isInherited: boolean;
   public get isOptimized(): boolean {
     return Array.isArray(this.expressions);
   }
 
-  constructor(public readonly name: string, rule: IRuleDefinition | Rule) {
-    this.recommended = rule.recommended !== false;
+  constructor(
+    public readonly name: string,
+    public readonly definition: IRuleDefinition,
+    public readonly owner: Ruleset,
+  ) {
+    this.recommended = definition.recommended !== false;
     this.enabled = this.recommended;
-    this.description = rule.description ?? null;
-    this.message = rule.message ?? null;
-    this.documentationUrl = rule.documentationUrl ?? null;
-    this.severity = Rule.getNormalizedSeverity(rule.severity);
-    this.resolved = rule.resolved !== false;
-    this.formats = rule.formats;
-    this.isInherited = false;
+    this.description = definition.description ?? null;
+    this.message = definition.message ?? null;
+    this.documentationUrl = definition.documentationUrl ?? null;
+    this.severity = Rule.getNormalizedSeverity(definition.severity);
+    this.resolved = definition.resolved !== false;
+    this.formats = definition.formats;
 
-    this.then = Array.isArray(rule.then) ? rule.then : [rule.then];
-    this.given = Array.isArray(rule.given) ? rule.given : [rule.given];
+    this.then = Array.isArray(definition.then) ? definition.then : [definition.then];
+    this.given = Array.isArray(definition.given) ? definition.given : [definition.given];
   }
 
   public matchesFormat(formats: IDocument['formats']): boolean {
@@ -82,7 +85,7 @@ export class Rule {
   }
 
   public clone(): Rule {
-    return new Rule(this.name, this);
+    return new Rule(this.name, this.definition, this.owner);
   }
 
   public hookup(cb: (rule: Rule, node: IGivenNode) => void): void {

@@ -109,14 +109,11 @@ export class Spectral {
     const runner = new Runner(this.runtime, inventory);
 
     if (document.formats === void 0) {
-      const registeredFormats = Object.keys(ruleset.formats);
-      const foundFormats = registeredFormats.filter(format =>
-        ruleset.formats[format](inventory.resolved, document.source),
-      );
+      const foundFormats = [...ruleset.formats].filter(format => format(inventory.resolved, document.source));
       if (foundFormats.length === 0 && opts.ignoreUnknownFormat !== true) {
         document.formats = null;
-        if (registeredFormats.length > 0) {
-          runner.addResult(this._generateUnrecognizedFormatError(document, registeredFormats));
+        if (ruleset.formats.size > 0) {
+          runner.addResult(this._generateUnrecognizedFormatError(document, ruleset.formats as any));
         }
       } else {
         document.formats = foundFormats;

@@ -1,8 +1,7 @@
-import { assertValidRule } from './validation';
 import { Rule } from './rule/rule';
 import { IParserOptions, RulesetDefinition, FileRulesetSeverity, RulesetExceptionCollection } from './types';
 import { DEFAULT_PARSER_OPTIONS } from '../consts';
-import { mergeRules } from './mergers/rules';
+import { mergeRule } from './mergers/rules';
 import { FormatLookup } from '../types';
 // import { mergeExceptions } from './mergers/exceptions';
 
@@ -25,6 +24,18 @@ export class Ruleset {
               : new Ruleset(extension, { severity: 'recommended' }),
           )
         : [];
+
+    if (Array.isArray(this.definition.formats)) {
+      for (const format of this.definition.formats) {
+        this.formats.add(format);
+      }
+    }
+
+    for (const { formats } of this.extends) {
+      for (const format of formats) {
+        this.formats.add(format);
+      }
+    }
   }
 
   public get exceptions(): RulesetExceptionCollection | null {
@@ -48,51 +59,35 @@ export class Ruleset {
   }
 
   public get rules(): Record<string, Rule> {
-    if (!('extends' in this.definition)) {
-      const rules: Record<string, Rule> = {};
-      for (const [name, rule] of Object.entries(this.definition.rules)) {
-        assertValidRule(rule); // todo: move it to json schema
-        rules[name] = new Rule(name, rule);
+    const rules: Record<string, Rule> = {};
+
+    if (this.extends.length > 0) {
+      for (const extendedRuleset of this.extends) {
+        for (const rule of Object.values(extendedRuleset.rules)) {
+          rule.enabled =
+            this.context.severity === 'all' || (this.context.severity === 'recommended' && rule.recommended);
+          rules[rule.name] = rule;
+        }
+      }
+    }
+
+    if ('rules' in this.definition) {
+      for (const [name, definition] of Object.entries(this.definition.rules)) {
+        const rule = mergeRule(rules[name], name, definition, this);
+        rules[name] = rule;
 
         if (rule.formats !== void 0) {
           for (const format of rule.formats) {
             this.formats.add(format);
           }
+        } else if (rule.owner !== this) {
+          rule.formats = rule.owner.definition.formats;
+        } else if (this.definition.formats !== void 0) {
+          rule.formats = this.definition.formats;
         }
-      }
 
-      return rules;
-    }
-
-    const rules: Record<string, Rule> = {};
-
-    if (this.extends.length > 0) {
-      for (const extendedRuleset of this.extends) {
-        Object.assign(rules, extendedRuleset.rules);
-      }
-    }
-
-    if ('rules' in this.definition) {
-      mergeRules(rules, this.definition.rules);
-    }
-
-    for (const [name, rule] of Object.entries(rules)) {
-      if (rule.isInherited) {
-        rule.enabled = this.context.severity === 'all' || (this.context.severity === 'recommended' && rule.recommended);
-        continue;
-      }
-
-      if (this.definition.documentationUrl !== void 0 && rule.documentationUrl === void 0) {
-        rule.documentationUrl = `${this.definition.documentationUrl}#${name}`;
-      }
-
-      if (this.definition.formats !== void 0 && rule.formats === void 0) {
-        rule.formats = this.definition.formats;
-      }
-
-      if (rule.formats !== void 0) {
-        for (const format of rule.formats) {
-          this.formats.add(format);
+        if (this.definition.documentationUrl !== void 0 && rule.documentationUrl === void 0) {
+          rule.documentationUrl = `${this.definition.documentationUrl}#${name}`;
         }
       }
     }

@@ -1,37 +1,32 @@
-import { STATIC_ASSETS } from '../../../../assets';
-import { empty } from '../../../../utils';
 import { IConstructorOpts, Spectral } from '../../../../spectral';
-import { isOpenApiv2, isOpenApiv3 } from '../../../../formats';
-import * as ruleset from '../../index.json';
+import ruleset from '../../index';
+import { Ruleset } from '../../../../ruleset/ruleset';
 
 export async function createWithRules(
+  // @ts-ignore
   rules: (keyof typeof ruleset['rules'])[],
   opts?: IConstructorOpts,
 ): Promise<Spectral> {
-  try {
-    Object.assign(STATIC_ASSETS, await import('../../../../../rulesets/assets/assets.oas.json'), {
-      'my-ruleset': JSON.stringify({
-        extends: [['@stoplight/spectral/rulesets/oas/index.json', 'off']],
+  const s = new Spectral(opts);
+  s.setRuleset(
+    new Ruleset(
+      {
+        extends: [ruleset],
         rules: rules.reduce((obj, name) => {
           obj[name] = true;
           return obj;
         }, {}),
-      }),
-    });
+      },
+      {
+        severity: 'off',
+      },
+    ),
+  );
 
-    const s = new Spectral(opts);
-    s.registerFormat('oas2', isOpenApiv2);
-    s.registerFormat('oas3', isOpenApiv3);
+  // for (const rule of Object.values(s.ruleset!.rules)) {
+  // let's make sure the rule is actually enabled
+  // expect(rule.enabled).toBe(rule.name in rules);
+  // }
 
-    await s.loadRuleset('my-ruleset');
-
-    for (const rule of rules) {
-      // let's make sure the rule is actually enabled
-      expect(s.ruleset!.rules[rule].severity).not.toEqual(-1);
-    }
-
-    return s;
-  } finally {
-    empty(STATIC_ASSETS);
-  }
+  return s;
 }
