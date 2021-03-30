@@ -99,12 +99,6 @@ const lintCommand: CommandModule = {
           type: 'boolean',
           default: false,
         },
-        'show-unmatched-globs': {
-          description: 'show unmatched glob patterns',
-          type: 'boolean',
-          default: false,
-          deprecated: 'use --fail-on-unmatched-globs',
-        },
         'fail-on-unmatched-globs': {
           description: 'fail on unmatched glob patterns',
           type: 'boolean',
@@ -132,7 +126,6 @@ const lintCommand: CommandModule = {
       output,
       encoding,
       ignoreUnknownFormat,
-      showUnmatchedGlobs,
       failOnUnmatchedGlobs,
       ...config
     } = (args as unknown) as ILintConfig & {
@@ -147,9 +140,8 @@ const lintCommand: CommandModule = {
       encoding,
       ignoreUnknownFormat,
       failOnUnmatchedGlobs,
-      showUnmatchedGlobs,
       ruleset,
-      ...pick<Partial<ILintConfig>, keyof ILintConfig>(config, ['skipRule', 'verbose', 'quiet', 'resolver']),
+      ...pick<Partial<ILintConfig>, keyof ILintConfig>(config, ['verbose', 'quiet', 'resolver']),
     })
       .then(results => {
         if (displayOnlyFailures) {

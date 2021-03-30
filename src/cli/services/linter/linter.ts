@@ -26,10 +26,7 @@ export async function lint(documents: Array<number | string>, flags: ILintConfig
   }
 
   const [globs, fileDescriptors] = segregateEntriesPerKind(documents);
-  const [targetUris, unmatchedPatterns] = await listFiles(
-    globs,
-    !(flags.showUnmatchedGlobs || flags.failOnUnmatchedGlobs),
-  );
+  const [targetUris, unmatchedPatterns] = await listFiles(globs, !flags.failOnUnmatchedGlobs);
   const results: IRuleResult[] = [];
 
   if (unmatchedPatterns.length > 0) {
